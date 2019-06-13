@@ -3,12 +3,12 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
-module.exports = {
+class PostController {
     async index(req, res) {
         const posts = await Post.find().sort('-createdAt');
 
         return res.json(posts);
-    },
+    }
 
     async store(req, res) {
         const { author, place, description, hashtags } = req.body;
@@ -38,4 +38,10 @@ module.exports = {
 
         return res.json(post);
     }
+    async destroy(req, res) {
+        await Post.findByIdAndDelete(req.params.id)
+
+        return res.json({ ok: "Sucesso" });
+    }
 }
+module.exports = new PostController();

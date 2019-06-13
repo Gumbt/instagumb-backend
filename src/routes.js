@@ -13,6 +13,7 @@ routes.post('/user', upload.single('avatar'), UserController.store);
 
 routes.get('/posts', PostController.index);
 routes.post('/posts', upload.single('image'), PostController.store);
+routes.delete('/posts/:id', PostController.destroy)
 
 routes.post('/posts/:id/like', LikeController.store)
 
