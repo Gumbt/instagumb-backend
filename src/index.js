@@ -1,4 +1,4 @@
-require('dotenv').config;
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,7 +10,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-n4nnb.mongodb.net/ig?retryWrites=true&w=majority', {
+mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true
 });
 
