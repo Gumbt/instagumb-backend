@@ -10,8 +10,7 @@ class UserController {
         return res.json(users);
     }
     async store(req, res) {
-        console.log(req.body);
-        console.log(req.file);
+
         const { name, email, description, password } = req.body;
 
         const { filename: avatar } = req.file;
@@ -19,6 +18,7 @@ class UserController {
         if (await User.findOne({
             email
         })) {
+            fs.unlinkSync(req.file.path);
             return res.status(400).json({
                 error: 'User already exists'
             })
