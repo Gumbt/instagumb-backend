@@ -1,20 +1,18 @@
 const express = require('express');
 const multer = require('multer');
 const uploadConfig = require('./app/config/upload');
-const PostController = require('./app/controllers/PostController')
-const LikeController = require('./app/controllers/LikeController')
-const UserController = require('./app/controllers/UserController')
+const controllers = require('./app/controllers')
 
 const routes = new express.Router();
 const upload = multer(uploadConfig);
 
-routes.get('/user', UserController.index);
-routes.post('/user', upload.single('avatar'), UserController.store);
+routes.get('/user', controllers.UserController.index);
+routes.post('/user', upload.single('avatar'), controllers.UserController.store);
 
-routes.get('/posts', PostController.index);
-routes.post('/posts', upload.single('image'), PostController.store);
-routes.delete('/posts/:id', PostController.destroy)
+routes.get('/posts', controllers.PostController.index);
+routes.post('/posts', upload.single('image'), controllers.PostController.store);
+routes.delete('/posts/:id', controllers.PostController.destroy)
 
-routes.post('/posts/:id/like', LikeController.store)
+routes.post('/posts/:id/like', controllers.LikeController.store)
 
 module.exports = routes;
