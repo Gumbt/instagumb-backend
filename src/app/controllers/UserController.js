@@ -49,11 +49,27 @@ class UserController {
         return res.json(re);
     }
     async update(req, res) {
-        console.log(req.body)
-        const user = await User.findByIdAndUpdate(req.body.id, req.body, {
+
+        const { name, email, description, password } = req.body;
+        if (await User.findOne({
+            email
+        })) {
+            return res.status(400).json({
+                error: 'Email already exists'
+            })
+        }
+        const userInfo = {
+            name,
+            email,
+            description,
+            password
+        }
+
+        const user = await User.findByIdAndUpdate(req.body.id, userInfo, {
             new: true
         })
 
+        //console.log(user)
         return res.json(user);
     }
 }
