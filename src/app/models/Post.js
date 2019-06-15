@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate')
 
-const PostSchema = new mongoose.Schema({
-    author: String,
+const Post = new mongoose.Schema({
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     place: String,
     description: String,
     hashtags: String,
@@ -10,8 +15,10 @@ const PostSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-},{
-    timestamps: true
-});
+}, {
+        timestamps: true
+    }
+);
 
-module.exports = mongoose.model('Post', PostSchema);
+Post.plugin(mongoosePaginate);
+module.exports = mongoose.model('Post', Post);

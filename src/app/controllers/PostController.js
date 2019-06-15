@@ -5,15 +5,20 @@ const fs = require('fs');
 
 class PostController {
     async index(req, res) {
-        const posts = await Post.find().sort('-createdAt');
+        const posts = await Post.paginate({}, {
+            page: req.query.page || 1,
+            limit: 20,
+            populate: ['author'],
+            sort: '-createdAt'
+        });
 
         return res.json(posts);
     }
 
     async store(req, res) {
-        const { author, place, description, hashtags } = req.body;
+        const { place, description, hashtags } = req.body;
         const { filename: image } = req.file;
-
+        const author = req.userId;
         const [name] = image.split('.');
         const fileName = `${name}.jpg`;
 
@@ -21,7 +26,7 @@ class PostController {
             .resize(500)
             .jpeg({ quality: 70 })
             .toFile(
-                path.resolve(req.file.destination, 'resized', fileName)
+                path.resolve(req.file.destination, 'resized', 'posts', fileName)
             );
 
         fs.unlinkSync(req.file.path);
@@ -33,15 +38,30 @@ class PostController {
             hashtags,
             image: fileName
         })
+        const postComplete = await Post.findById({
+            _id: post._id
+        }).populate('author');
 
-        req.io.emit('post', post);
+        req.io.emit('post', postComplete);
+
+        return res.json(postComplete);
+    }
+    async update(req, res) {
+        const post = await Post.findByIdAndUpdate(req.body.id, req.body, {
+            new: true
+        })
 
         return res.json(post);
     }
     async destroy(req, res) {
         await Post.findByIdAndDelete(req.params.id)
 
-        return res.json({ ok: "Sucesso" });
+        return res.send();
+    }
+    async deleteall(req, res) {
+        await Post.deleteMany();
+
+        return res.send();
     }
 }
 module.exports = new PostController();

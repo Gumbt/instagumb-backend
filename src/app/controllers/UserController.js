@@ -32,7 +32,7 @@ class UserController {
             .resize(500)
             .jpeg({ quality: 70 })
             .toFile(
-                path.resolve(req.file.destination, 'resized', fileName)
+                path.resolve(req.file.destination, 'resized', 'avatar', fileName)
             );
 
         fs.unlinkSync(req.file.path);
@@ -44,10 +44,17 @@ class UserController {
             password,
             avatar
         }
-        console.log(user);
         const re = await User.create(user);
 
         return res.json(re);
+    }
+    async update(req, res) {
+        console.log(req.body)
+        const user = await User.findByIdAndUpdate(req.body.id, req.body, {
+            new: true
+        })
+
+        return res.json(user);
     }
 }
 module.exports = new UserController();
