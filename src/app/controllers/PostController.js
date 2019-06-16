@@ -7,7 +7,7 @@ class PostController {
     async index(req, res) {
         const posts = await Post.paginate({}, {
             page: req.query.page || 1,
-            limit: 20,
+            limit: 10,
             populate: ['author'],
             sort: '-createdAt'
         });

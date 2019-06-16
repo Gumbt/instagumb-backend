@@ -2,6 +2,11 @@ const Post = require('../models/Post');
 const Like = require('../models/Like');
 
 class LikeController {
+    async index(req, res) {
+        const postsLiked = await Like.find({ userid: req.userId }).sort('-createdAt');
+
+        return res.json(postsLiked);
+    }
     async store(req, res) {
         const postid = req.params.id;
         const userid = req.userId;
@@ -22,7 +27,7 @@ class LikeController {
 
             req.io.emit('like', post);
 
-            return res.json(post);
+            return res.json({ like: true });
         } else {
             await Like.findByIdAndDelete(verificaLike._id)
             post.likes -= 1;
@@ -30,7 +35,7 @@ class LikeController {
             await post.save();
 
             req.io.emit('like', post);
-            return res.json(post);
+            return res.json({ like: false });
         }
     }
 };
