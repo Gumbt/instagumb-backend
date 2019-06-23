@@ -48,8 +48,14 @@ class UserController {
 
         return res.json(re);
     }
+    async getuser(req, res) {
+        const user = await User.findById(req.params.id)
+
+        return res.json(user);
+    }
     async update(req, res) {
 
+        if (req.body.id !== req.userId) return res.status(400).json({ error: "Invalid token" })
         const { name, email, description, password } = req.body;
         if (await User.findOne({
             email
@@ -71,6 +77,11 @@ class UserController {
 
         //console.log(user)
         return res.json(user);
+    }
+    async deleteall(req, res) {
+        await User.deleteMany();
+
+        return res.send();
     }
 }
 module.exports = new UserController();

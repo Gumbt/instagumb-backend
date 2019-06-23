@@ -11,7 +11,6 @@ class PostController {
             populate: ['author'],
             sort: '-createdAt'
         });
-
         return res.json(posts);
     }
 
@@ -50,6 +49,13 @@ class PostController {
         const post = await Post.findByIdAndUpdate(req.body.id, req.body, {
             new: true
         })
+
+        return res.json(post);
+    }
+    async getposts(req, res) {
+        const post = await Post.find({
+            author: req.params.id
+        }).sort('-createdAt').populate('author');
 
         return res.json(post);
     }
